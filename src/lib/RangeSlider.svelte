@@ -7,18 +7,28 @@
   let sliderValue = 50;
   let isDragging = false;
 
-  function handleMouseMove(event) {
-    if (!isDragging) return;
-    const rect = slider.getBoundingClientRect();
-    let newValue = ((event.clientX - rect.left) / rect.width) * 100;
-    newValue = Math.max(0, Math.min(100, newValue));
-    sliderValue = newValue;
-    sliderVal.set(Math.round(newValue)); // set the value for the outside world
+  function handleMove(event) {
+    if (!slider) return; // Check if slider is defined
+    const rect = slider.getBoundingClientRect(); // Get bounding rectangle of slider element
+    event.preventDefault(); // Prevent default touch event behavior (e.g., scrolling)
+
+    let clientX, clientY;
+    if (event.type === 'touchmove') {
+      clientX = event.touches[0].clientX;
+      clientY = event.touches[0].clientY;
+    } else {
+      clientX = event.clientX;
+      clientY = event.clientY;
+    }
+
+    const newValue = ((clientX - rect.left) / rect.width) * 100;
+    sliderValue = Math.max(0, Math.min(100, newValue));
+    sliderVal.set(Math.round(sliderValue)); // set the value for the outside world
     gsap.to(".slider-fill", { width: `${sliderValue}%`, duration: 0.1 });
 
     // Move the slider container slightly
-    const moveX = ((event.clientX - rect.left) / rect.width) * 3 - 5;
-    const moveY = ((event.clientY - rect.top) / rect.height) * 0.5 - 2;
+    const moveX = ((clientX - rect.left) / rect.width) * 3 - 5;
+    const moveY = ((clientY - rect.top) / rect.height) * 0.5 - 2;
     gsap.to(slider, {
       x: moveX,
       y: moveY,
@@ -29,7 +39,7 @@
 
   function handleMouseDown(event) {
     isDragging = true;
-    handleMouseMove(event);
+    handleMove(event);
     gsap.to(slider, { scale: 1.02, duration: 0.1 });
   }
 
@@ -39,8 +49,19 @@
   }
 
   onMount(() => {
-    window.addEventListener("mousemove", handleMouseMove);
+    slider = document.querySelector('.slider-container'); // Assign the slider element
+    window.addEventListener("mousemove", (event) => {
+      if (isDragging) {
+        handleMove(event);
+      }
+    });
     window.addEventListener("mouseup", handleMouseUp);
+
+    // Touch events
+    slider.addEventListener('touchstart', handleMouseDown);
+    slider.addEventListener('touchmove', handleMove); // Pass touchmove event to handleMove directly
+    slider.addEventListener('touchend', handleMouseUp);
+    slider.addEventListener('touchcancel', handleMouseUp);
   });
 </script>
 

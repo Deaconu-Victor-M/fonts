@@ -69,7 +69,7 @@
   </div>
 
   <div  bind:this={textContainer}
-    class="w-full h-full hidden sm:flex flex-col items-center justify-center relative"
+    class="w-full h-full hidden sm:flex flex-col items-center justify-center relative delay-100"
     style="transition: font-weight 0.3 ease;"
     id="text-container"
   >
@@ -83,10 +83,12 @@
     </div>
   </div>
 
-  <div class="w-full h-full flex flex-col items-center justify-center">
+  <div class="relative w-full h-full flex flex-col items-center justify-center">
+    <div class=""></div>
     <div class="flex flex-row items-center gap-4 w-3/5 h-2">
       <span class=" text-nowrap">Weight: {$sliderVal}</span>
       <RangeSlider />
     </div>
   </div>
 </div>
+
