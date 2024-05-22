@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'NeueRegrade';  /* Replace with your font name */
+  src: url('/NeueRegradeVariable.ttf') format('truetype');  /* Replace with the path to your font file */
+}
